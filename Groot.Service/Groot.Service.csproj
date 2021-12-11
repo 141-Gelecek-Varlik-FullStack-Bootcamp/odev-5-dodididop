@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Microsoft.EntityFrameworkCore" />
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="User\" />
+    <None Remove="User %28copy%29\" />
+    <None Remove="User %28another copy%29\" />
+    <None Remove="AutoMapper" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.12" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Groot.DB\Groot.DB.csproj" />
+    <ProjectReference Include="..\Groot.Model\Groot.Model.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="User\" />
+    <Folder Include="Product\" />
+    <Folder Include="Category\" />
+  </ItemGroup>
+</Project>
