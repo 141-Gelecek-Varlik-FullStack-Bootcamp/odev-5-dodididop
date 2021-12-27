@@ -9,8 +9,12 @@ namespace Groot.API.Controllers.Infrastructure
         {
             CreateMap<Groot.Model.User.UserViewModel, Groot.DB.Entities.User>();
             CreateMap<Groot.DB.Entities.User, Groot.Model.User.UserViewModel>();
-            CreateMap<Groot.Model.Product.ProductViewModel, Groot.DB.Entities.Product>();
-            CreateMap<Groot.DB.Entities.Product, Groot.Model.Product.ProductViewModel>();
+            CreateMap<Groot.Model.Product.InsertProductViewModel, Groot.DB.Entities.Product>();
+            CreateMap<Groot.DB.Entities.Product, Groot.Model.Product.DetailedProductViewModel>();
+            CreateMap<Groot.Model.Product.DetailedProductViewModel, Groot.DB.Entities.Product>();
+            //.ForMember(c => c.Category, option => option.Ignore())
+            //.ForMember(c => c.User, option => option.Ignore()); ;
+
         }
     }
 }

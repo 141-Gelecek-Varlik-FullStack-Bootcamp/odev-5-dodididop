@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-
-#nullable disable
-
-namespace Groot.DB.Entities
+namespace Groot.Model.Product
 {
-    public partial class Product
+    public class DetailedProductViewModel
     {
-        public Product()
-        {
-            User = new HashSet<User>();
-        }
-
         public int Id { get; set; }
         public int? CategoryId { get; set; }
         public string Name { get; set; }
@@ -25,7 +16,6 @@ namespace Groot.DB.Entities
         public int Iuser { get; set; }
         public int? Uuser { get; set; }
 
-        public virtual Category Category { get; set; }
-        public virtual ICollection<User> User { get; set; }
+      //  public string CategoryName { get; set; }
     }
 }

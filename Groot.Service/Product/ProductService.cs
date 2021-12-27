@@ -17,79 +17,97 @@ namespace Groot.Service.Product
             mapper = _mapper;
         }
 
-        public General<Model.Product.ProductViewModel> Insert(Model.Product.ProductViewModel newProduct)
+        public General<Model.Product.DetailedProductViewModel> Insert(Model.Product.InsertProductViewModel newProduct)
         {
-            var result = new General<Groot.Model.Product.ProductViewModel>() { IsSuccess = false };
+            var response = new General<Groot.Model.Product.DetailedProductViewModel>() { IsSuccess = false };
             var model = mapper.Map<Groot.DB.Entities.Product>(newProduct);
             using (var srv = new GrootContext())
             {
-
                 model.IdateTime = DateTime.Now;
                 srv.Product.Add(model);
                 srv.SaveChanges();
-                result.Entity = mapper.Map<Groot.Model.Product.ProductViewModel>(model);
-                result.IsSuccess = true;
+                response.Entity = mapper.Map<Groot.Model.Product.DetailedProductViewModel>(model);
+                response.IsSuccess = true;
 
             }
-            return result;
+            return response;
         }
-        public General<ProductViewModel> GetProducts()
+
+        public General<DetailedProductViewModel> UpdateProduct(DetailedProductViewModel updatedProduct)
         {
-            var result = new General<ProductViewModel>();
+            var response = new General<Groot.Model.Product.DetailedProductViewModel>();
+            using (var srv = new GrootContext())
+            {
+                var product = srv.Product.Find(updatedProduct.Id);
+
+                if (product is not null)
+                {
+                    mapper.Map(updatedProduct, product);
+                    srv.SaveChanges();
+                    response.Entity = mapper.Map<DetailedProductViewModel>(product);
+                    response.IsSuccess = true;
+                }
+                else
+                {
+                    response.ExceptionMessage = "Bir hata oluştu.";
+                    response.IsSuccess = false;
+                }
+                return response;
+            }
+        }
+
+        public General<ListOfProductViewModel> GetProducts()
+        {
+            var response = new General<ListOfProductViewModel>();
             using (var srv = new GrootContext())
             {
                 var data = srv.Product.Where(a => a.IsActive && !a.IsDeleted).OrderBy(a => a.Id);
 
                 if (data.Any())
                 {
-                    result.List = mapper.Map<List<ProductViewModel>>(data);
-                    result.IsSuccess = true;
+                    response.IsSuccess = true;
                 }
-                else
-                    result.IsSuccess = false;
+                else {
+                    response.IsSuccess = false;
+                    response.ExceptionMessage = "Bir hata oluştu.";
+                }
             }
-            return result;
+            return response;
         }
 
-        public General<ProductViewModel> UpdateProduct(int id, ProductViewModel updatedProduct)
+        public General<DetailedProductViewModel> GetProductById(int id)
         {
-            var result = new General<Groot.Model.Product.ProductViewModel>();
+            var response = new General<DetailedProductViewModel>();
             using (var srv = new GrootContext())
             {
-                bool isAuthenticated = srv.Product.Any(a => a.IsActive && !a.IsDeleted && a.Id == updatedProduct.Id && a.Iuser == updatedProduct.Iuser);
-                var product = srv.Product.SingleOrDefault(a => a.Id == id);
+                var data = srv.Product.Where(a => a.Id == id).FirstOrDefault();
 
-                if (isAuthenticated && product is not null)
+                if (data is not null)
                 {
-                    product.Name = updatedProduct.Name;
-                    product.Price = updatedProduct.Price;
-                    product.IdateTime = DateTime.Now;
-                    product.DisplayName = updatedProduct.DisplayName;
-                    product.Stock = updatedProduct.Stock;
-                    srv.SaveChanges();
-                    result.Entity = mapper.Map<Groot.Model.Product.ProductViewModel>(product);
-                    result.IsSuccess = true;
+                    response.IsSuccess = true;
                 }
                 else
-                    result.IsSuccess = false;
-
-                return result;
+                {
+                    response.IsSuccess = false;
+                    response.ExceptionMessage = "Bir hata oluştu.";
+                }
             }
+            return response;
         }
 
-        public General<Model.Product.ProductViewModel> DeleteProduct(int id)
+        public General<Model.Product.DetailedProductViewModel> DeleteProduct(int id)
         {
-            var result = new General<Groot.Model.Product.ProductViewModel>() { IsSuccess = false };
-
+            var response = new General<Groot.Model.Product.DetailedProductViewModel>() { IsSuccess = false };
+            
             using (var srv = new GrootContext())
             {
                 var product = srv.Product.Where(a => a.Id == id).SingleOrDefault();
                 srv.Product.Remove(product);
                 srv.SaveChanges();
-                result.Entity = mapper.Map<ProductViewModel>(product);
-                result.IsSuccess = true;
+                response.Entity = mapper.Map<DetailedProductViewModel>(product);
+                response.IsSuccess = true;
             }
-            return result;
-        }
+            return response;
+        }      
     }
 }

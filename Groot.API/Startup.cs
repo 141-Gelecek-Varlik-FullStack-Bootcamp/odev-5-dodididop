@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Groot.API.Controllers.Infrastructure;
+using Groot.API.Infrastructure;
 using Groot.Service.Product;
 using Groot.Service.User;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +37,8 @@ namespace Groot.API
             services.AddTransient<IUserService,UserService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddControllers();
+            services.AddMemoryCache();
+            services.AddScoped<LoginFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

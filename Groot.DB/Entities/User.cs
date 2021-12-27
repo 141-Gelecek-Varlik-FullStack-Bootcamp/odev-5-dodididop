@@ -17,8 +17,8 @@ namespace Groot.DB.Entities
         public bool IsDeleted { get; set; }
         public DateTime IdateTime { get; set; }
         public DateTime? UdateTime { get; set; }
-        public string Iuser { get; set; }
-        public string? Uuser { get; set; }
+        public int Iuser { get; set; }
+        public int? Uuser { get; set; }
 
         public virtual Product Product { get; set; }
     }

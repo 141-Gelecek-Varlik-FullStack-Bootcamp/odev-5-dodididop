@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using AutoMapper;
 using Groot.DB.Entities.DatabaseContext;
 using Groot.Model;
-using AutoMapper;
 
 namespace Groot.Service.User
 {
@@ -14,34 +14,53 @@ namespace Groot.Service.User
         {
             mapper = _mapper;
         }
-        public bool Login(string firstName, string lastName, string email,  string password)
+        public General<Groot.Model.User.UserViewModel> Login(Groot.Model.Login.LoginViewModel loginUser)
         {
-            bool result = false;
-            using (var srv = new GrootContext())
+            General<Groot.Model.User.UserViewModel> result = new();
+            try
             {
-                result = srv.User.Any(a => !a.IsDeleted && a.IsActive && a.LastName ==lastName && a.Email == email &&
-                a.FirstName == firstName && a.Password == password);
+                using (var srv = new GrootContext())
+                {
+                    var _data = srv.User.FirstOrDefault(a => a.LastName == loginUser.LastName &&
+                    a.FirstName == loginUser.FirstName && a.Password == loginUser.Password);
+                    if (_data is not null)
+                    {
+                        result.IsSuccess = true;
+                        result.Entity = mapper.Map<Groot.Model.User.UserViewModel>(_data);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                result.ExceptionMessage = "Beklenmeyen bir hata oluştu.";
+            }
+            
                 return result;
         }
 
         public General<Groot.Model.User.UserViewModel> Insert(Groot.Model.User.UserViewModel newUser)
         {
             var result = new General<Groot.Model.User.UserViewModel>() { IsSuccess = false };
-            var model = mapper.Map<Groot.DB.Entities.User>(newUser); 
-            using (var srv = new GrootContext())
-            { 
-                
-                model.IdateTime = DateTime.Now;
-                srv.User.Add(model);
-                srv.SaveChanges();
-                result.Entity = mapper.Map<Groot.Model.User.UserViewModel>(model);
-                result.IsSuccess = true;
+            try
+            {
+                var model = mapper.Map<Groot.DB.Entities.User>(newUser);
+                using (var srv = new GrootContext())
+                {
 
+                    model.IdateTime = DateTime.Now;
+                    srv.User.Add(model);
+                    srv.SaveChanges();
+                    result.Entity = mapper.Map<Groot.Model.User.UserViewModel>(model);
+                    result.IsSuccess = true;
+
+                }
             }
+            catch (System.Exception ex)
+            {
+                result.ExceptionMessage ="Beklenmeyen bir hata oluştu.";
+            }
+            
             return result;
-        }
-
-        
+        }        
     }
 }
