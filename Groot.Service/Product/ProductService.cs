@@ -5,16 +5,20 @@ using AutoMapper;
 using Groot.DB.Entities.DatabaseContext;
 using Groot.Model;
 using Groot.Model.Product;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace Groot.Service.Product
 {
     public class ProductService : IProductService
     {
         private readonly IMapper mapper;
+        private readonly IDistributedCache distributedCache;
 
-        public ProductService(IMapper _mapper)
+        public ProductService(IMapper _mapper, IDistributedCache _distributedCache)
         {
             mapper = _mapper;
+            distributedCache = _distributedCache;
         }
 
         public General<Model.Product.DetailedProductViewModel> Insert(Model.Product.InsertProductViewModel newProduct)
@@ -58,44 +62,61 @@ namespace Groot.Service.Product
 
         public General<List<ListOfProductViewModel>> GetProducts()
         {
-            var response = new General<List<ListOfProductViewModel>> ();
-            using (var srv = new GrootContext())
-            {
-                var data = srv.Product.Where(a => a.IsActive && !a.IsDeleted).OrderBy(a => a.Id);
+            var response = new General<List<ListOfProductViewModel>>();
 
-                if (data.Any())
+            try//redis is on.
+            {
+                if (string.IsNullOrEmpty(distributedCache.GetString("products")))
                 {
-                    response.IsSuccess = true;
-                    response.Entity = mapper.Map<List<ListOfProductViewModel>>(data);
+
+                    using (var srv = new GrootContext())
+                    {
+                        var data = srv.Product.Where(a => a.IsActive && !a.IsDeleted).OrderBy(a => a.Id).ToList();
+                        if (data.Any())
+                        {
+                            var productList = JsonConvert.SerializeObject(data);
+                            distributedCache.SetString("products", productList);
+                            response.IsSuccess = true;
+                            response.Entity = mapper.Map<List<ListOfProductViewModel>>(data);
+                        }
+                        else
+                        {
+                            response.IsSuccess = false;
+                            response.ExceptionMessage = "Bir hata oluştu.";
+                        }
+                    }
                 }
-                else {
-                    response.IsSuccess = false;
-                    response.ExceptionMessage = "Bir hata oluştu.";
+                else
+                {
+                    var data = distributedCache.GetString("products");
+                    var obj = JsonConvert.DeserializeObject<List<Groot.DB.Entities.Product>>(data);
+                    response.Entity = mapper.Map<List<ListOfProductViewModel>>(obj);
+                    response.IsSuccess = true;
+                }
+                return response;
+            }
+            catch (Exception ex)//redis is off.
+            {
+                using (var srv = new GrootContext())
+                {
+                    var data = srv.Product.Where(a => a.IsActive && !a.IsDeleted).OrderBy(a => a.Id).ToList();
+                    if (data.Any())
+                    {
+                        response.IsSuccess = true;
+                        response.Entity = mapper.Map<List<ListOfProductViewModel>>(data);
+                    }
+                    else
+                    {
+                        response.IsSuccess = false;
+                        response.ExceptionMessage = "Bir hata oluştu.";
+                    }
+                    return response;
                 }
             }
-
-            return response;
+            
+            
         }
 
-        //public General<ListOfProductViewModel> GetProductsByName(string productName)
-        //{
-        //    var response = new General<ListOfProductViewModel>();
-        //    using (var srv = new GrootContext())
-        //    {
-        //        var data = srv.Product.Where(a => a.IsActive && !a.IsDeleted && productName ==a.Name).OrderBy(a => a.Id);
-
-        //        if (data.Any())
-        //        {
-        //            response.IsSuccess = true;
-        //        }
-        //        else
-        //        {
-        //            response.IsSuccess = false;
-        //            response.ExceptionMessage = "Bir hata oluştu.";
-        //        }
-        //    }
-        //    return response;
-        //}
 
         public General<DetailedProductViewModel> GetProductById(int id)
         {
