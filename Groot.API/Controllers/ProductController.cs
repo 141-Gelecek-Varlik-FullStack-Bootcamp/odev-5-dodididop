@@ -17,7 +17,7 @@ namespace Groot.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class ProductController : ControllerBase
     {
         //12.12.2021

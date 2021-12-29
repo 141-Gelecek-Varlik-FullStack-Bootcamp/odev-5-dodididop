@@ -25,12 +25,12 @@ namespace Groot.API.Infrastructure
         public void OnActionExecuting(ActionExecutingContext context)
         {
 
-            //if (!memoryCache.TryGetValue(CacheKeys.Login, out Model.Login.LoginViewModel response))
-            //{
-            //    context.Result = new BadRequestObjectResult("User is null");
-            //}
-            //return;
-            
+            if (!memoryCache.TryGetValue(CacheKeys.Login, out Model.User.UserViewModel response))
+            {
+                context.Result = new BadRequestObjectResult("User is null");
+            }
+            return;
+
         }
     }
 }
