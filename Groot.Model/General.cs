@@ -5,6 +5,10 @@ namespace Groot.Model
 {
     public class General<T>
     {
+        public General()
+        {
+
+        }
         public bool IsSuccess { get; set; }
         public T Entity { get; set; }
         public string ExceptionMessage { get; set; }

@@ -38,6 +38,11 @@ namespace Groot.API
             services.AddTransient<IProductService, ProductService>();
             services.AddControllers();
             services.AddMemoryCache();
+
+            //added redis cache
+            services.AddStackExchangeRedisCache(options => {
+                options.Configuration = "localhost:6379";
+            });
             services.AddScoped<LoginFilter>();
         }
 

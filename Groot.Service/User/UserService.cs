@@ -55,7 +55,7 @@ namespace Groot.Service.User
 
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 result.ExceptionMessage ="Beklenmeyen bir hata oluştu.";
             }

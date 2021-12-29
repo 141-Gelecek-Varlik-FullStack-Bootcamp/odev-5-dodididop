@@ -29,15 +29,7 @@ namespace Groot.API.Controllers
         [ServiceFilter(typeof(LoginFilter))]
 
         public General<Groot.Model.User.UserViewModel> Insert([FromBody] Groot.Model.User.UserViewModel newUser)
-        {
-            General<Groot.Model.User.UserViewModel> response = new General<Groot.Model.User.UserViewModel>();
-
-            //if (CurrentUser is { Id: <= 0})
-            //{
-            //    response.ExceptionMessage = "Lütfen giriş yapınız.";
-            //    return response;
-            //}
-            
+        {    
             return userService.Insert(newUser);
 
         }

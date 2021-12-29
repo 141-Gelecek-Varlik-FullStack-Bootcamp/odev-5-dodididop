@@ -56,9 +56,9 @@ namespace Groot.Service.Product
             }
         }
 
-        public General<ListOfProductViewModel> GetProducts()
+        public General<List<ListOfProductViewModel>> GetProducts()
         {
-            var response = new General<ListOfProductViewModel>();
+            var response = new General<List<ListOfProductViewModel>> ();
             using (var srv = new GrootContext())
             {
                 var data = srv.Product.Where(a => a.IsActive && !a.IsDeleted).OrderBy(a => a.Id);
@@ -66,14 +66,36 @@ namespace Groot.Service.Product
                 if (data.Any())
                 {
                     response.IsSuccess = true;
+                    response.Entity = mapper.Map<List<ListOfProductViewModel>>(data);
                 }
                 else {
                     response.IsSuccess = false;
                     response.ExceptionMessage = "Bir hata oluştu.";
                 }
             }
+
             return response;
         }
+
+        //public General<ListOfProductViewModel> GetProductsByName(string productName)
+        //{
+        //    var response = new General<ListOfProductViewModel>();
+        //    using (var srv = new GrootContext())
+        //    {
+        //        var data = srv.Product.Where(a => a.IsActive && !a.IsDeleted && productName ==a.Name).OrderBy(a => a.Id);
+
+        //        if (data.Any())
+        //        {
+        //            response.IsSuccess = true;
+        //        }
+        //        else
+        //        {
+        //            response.IsSuccess = false;
+        //            response.ExceptionMessage = "Bir hata oluştu.";
+        //        }
+        //    }
+        //    return response;
+        //}
 
         public General<DetailedProductViewModel> GetProductById(int id)
         {
@@ -85,6 +107,7 @@ namespace Groot.Service.Product
                 if (data is not null)
                 {
                     response.IsSuccess = true;
+                    response.Entity = mapper.Map<DetailedProductViewModel>(data);
                 }
                 else
                 {

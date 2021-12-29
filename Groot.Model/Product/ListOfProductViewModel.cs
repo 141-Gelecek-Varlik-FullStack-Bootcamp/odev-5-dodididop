@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 namespace Groot.Model.Product
 {
     public class ListOfProductViewModel
