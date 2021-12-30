@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Groot.API.Infrastructure;
 
 namespace Groot.Model.User
 {
@@ -10,5 +9,6 @@ namespace Groot.Model.User
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public UserRole UserRole { get; set; }
     }
 }

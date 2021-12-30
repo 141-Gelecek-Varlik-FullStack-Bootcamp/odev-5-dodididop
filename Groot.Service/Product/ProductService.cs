@@ -28,6 +28,7 @@ namespace Groot.Service.Product
             using (var srv = new GrootContext())
             {
                 model.IdateTime = DateTime.Now;
+                model.IsActive = true;
                 srv.Product.Add(model);
                 srv.SaveChanges();
                 response.Entity = mapper.Map<Groot.Model.Product.DetailedProductViewModel>(model);

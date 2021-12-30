@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Groot.API.Controllers.Infrastructure;
 using Groot.API.Infrastructure;
+using Groot.Service.Common;
 using Groot.Service.Product;
 using Groot.Service.User;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Groot.API
 {
@@ -44,6 +41,25 @@ namespace Groot.API
                 options.Configuration = "localhost:6379";
             });
             services.AddScoped<LoginFilter>();
+            services.AddHangfire(config => config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseDefaultTypeSerializer()
+            .UseMemoryStorage());
+
+            services.AddHangfireServer();
+            services.AddTransient(options => {
+                return new AppSettings
+                {
+                    MailServer = $"{Configuration["MailServer"]}",
+                    MailPort = Convert.ToInt32(Configuration["MailPort"]),
+                    MailPassword = $"{Configuration["MailPassword"]}",
+                    MailSendFrom = $"{Configuration["MailSendFrom"]}",
+                    MailSendFromName = $"{Configuration["MailSendFromName"]}"
+                };
+            });
+            services.AddSingleton<IWelcomeMailJob, WelcomeMailJob>();
+            services.AddSingleton<IMailSender, MailSender>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +80,7 @@ namespace Groot.API
             {
                 endpoints.MapControllers();
             });
+            
         }
     }
 }

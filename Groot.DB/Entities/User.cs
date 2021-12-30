@@ -19,6 +19,7 @@ namespace Groot.DB.Entities
         public DateTime? UdateTime { get; set; }
         public int Iuser { get; set; }
         public int? Uuser { get; set; }
+        public int UserRole { get; set; }
 
         public virtual Product Product { get; set; }
     }

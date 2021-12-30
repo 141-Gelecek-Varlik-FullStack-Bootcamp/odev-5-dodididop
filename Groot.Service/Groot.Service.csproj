@@ -11,11 +11,18 @@
     <None Remove="User %28copy%29\" />
     <None Remove="User %28another copy%29\" />
     <None Remove="AutoMapper" />
+    <None Remove="BackgroundJob\" />
+    <None Remove="Hangfire.AspNetCore" />
+    <None Remove="Hangfire.Core" />
+    <None Remove="Hangfire.MemoryStorage" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.12" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.28" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Groot.DB\Groot.DB.csproj" />
@@ -25,5 +32,6 @@
     <Folder Include="User\" />
     <Folder Include="Product\" />
     <Folder Include="Category\" />
+    <Folder Include="BackgroundJob\" />
   </ItemGroup>
 </Project>

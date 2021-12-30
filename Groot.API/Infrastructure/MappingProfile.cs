@@ -12,10 +12,6 @@ namespace Groot.API.Controllers.Infrastructure
             CreateMap<Groot.Model.Product.InsertProductViewModel, Groot.DB.Entities.Product>();
             CreateMap<Groot.DB.Entities.Product, Groot.Model.Product.DetailedProductViewModel>();
             CreateMap<Groot.Model.Product.DetailedProductViewModel, Groot.DB.Entities.Product>();
-
-            //.ForMember(c => c.Category, option => option.Ignore())
-            //.ForMember(c => c.User, option => option.Ignore());
-            //CreateMap<Groot.Model.Product.ListOfProductViewModel, Groot.DB.Entities.Product>();
             CreateMap<Groot.DB.Entities.Product, Groot.Model.Product.ListOfProductViewModel>();
 
         }

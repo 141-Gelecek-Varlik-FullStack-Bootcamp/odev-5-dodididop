@@ -10,6 +10,10 @@
     <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <None Remove="Microsoft.Extensions.Caching.StackExchangeRedis" />
+    <None Remove="Microsoft.AspNetCore.Identity" />
+    <None Remove="Hangfire.MemoryStorage" />
+    <None Remove="Hangfire.Core" />
+    <None Remove="Hangfire.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
